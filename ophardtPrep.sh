@@ -9,7 +9,7 @@ apt install apache2 php7.2 mariadb-server php7.2-mysql php7.2-xml php7.2-curl ph
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
 ufw allow 'WWW Full'
-ufw enable
+ufw --force enable
 
 #Change MySQL configuration
 echo '[mysqld]

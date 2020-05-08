@@ -1,8 +1,8 @@
 #!/bin/bash
-echo 'This will install Ophardt on your Raspberry Pi 4b'
+echo 'This will install Ophardt on your Raspberry Pi 4B'
 
 PS3='Please choose desired webserver: '
-options=("Option 1" "Option 2" "Option 3" "Quit")
+options=("Apache2" "Nginx" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in

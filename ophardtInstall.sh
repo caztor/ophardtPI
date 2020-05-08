@@ -68,10 +68,14 @@ EOF
   sudo a2ensite default-ssl
   sudo a2enconf ssl-params
 
+  echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/apache2/conf.d/00-ioncube.ini
+
 elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
   apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-nginx -y
+
+  echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/fpm/conf.d/00-ioncube.ini
 
 fi
 
@@ -83,7 +87,6 @@ wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_armv7l.t
 tar -zxvf ioncube_loaders_lin_armv7l.tar.gz
 cp ioncube/ioncube_loader_lin_7.2.so /usr/lib/php/20170718/
 rm -r ioncube*
-echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/apache2/conf.d/00-ioncube.ini
 
 #Download and install Ophardt Linux Utilities
 wget https://fencing.ophardt.online/software/20200211_67t344/linux-utils.zip

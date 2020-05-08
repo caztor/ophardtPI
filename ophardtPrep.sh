@@ -38,7 +38,7 @@ echo '[mysqld]
 sql-mode=ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' >> /etc/mysql/conf.d/mysql.cnf
 service mysqld restart
 
-if [ $SERVER -eq 'Apache2' ]; then
+if [ $SERVER == "Apache2" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
   apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring -y
@@ -68,7 +68,7 @@ if [ $SERVER -eq 'Apache2' ]; then
   sudo a2ensite default-ssl
   sudo a2enconf ssl-params
 
-elif [ $SERVER -eq 'Nginx' ]; then
+elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
   apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring -y

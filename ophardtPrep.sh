@@ -88,7 +88,7 @@ rm -r ioncube*
 echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/apache2/conf.d/00-ioncube.ini
 
 #Download and install Ophardt Linux Utilities
-wget https://fencing.ophardt.online/software/20200101_3d46b7t/linux-utils.zip
+wget https://fencing.ophardt.online/software/20200211_67t344/linux-utils.zip
 unzip linux-utils.zip
 mv linux-utils /var/www/
 rm linux-utils.zip

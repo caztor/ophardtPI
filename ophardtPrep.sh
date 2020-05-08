@@ -3,17 +3,15 @@ echo 'This will install Ophardt on your Raspberry Pi 4B'
 
 PS3='Please choose desired webserver: '
 options=("Apache2" "Nginx" "Quit")
-select opt in "${options[@]}"
+select SERVER in "${options[@]}"
 do
-    case $opt in
+    case $SERVER in
         "Apache2")
-            echo "Installing Ophardt on $opt"
-            SERVER = $opt
+            echo "Installing Ophardt on $SERVER"
             break
             ;;
         "Nginx")
-            echo "Installing Ophardt on $opt"
-            SERVER = $opt
+            echo "Installing Ophardt on $SERVER"
             break
             ;;
         "Quit")

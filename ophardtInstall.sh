@@ -26,7 +26,7 @@ apt update
 apt upgrade -y
 
 #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-apt install mariadb-server python-mysql.connector openjdk-8-jre ufw certbot python-certbot-apache -y
+apt install mariadb-server python-mysql.connector openjdk-8-jre ufw certbot -y
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
@@ -41,7 +41,7 @@ service mysqld restart
 if [ $SERVER == "Apache2" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring -y
+  apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-apache -y
 
   #Create secure SSL config for Apache
   cat > /etc/apache2/conf-available/ssl-params.conf << EOF
@@ -71,7 +71,7 @@ EOF
 elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring -y
+  apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-nginx -y
 
 fi
 

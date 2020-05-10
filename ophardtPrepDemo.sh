@@ -50,6 +50,7 @@ do
 
 	echo - Copying files
 	cp -R /var/www/fencing /var/www/$HOSTNAME
+	wget -O /var/www/$HOSTNAME/web/img/logo.png https://raw.githubusercontent.com/caztor/ophardtPI/master/logo/logo$i.png 
 
 	echo - Setting permissions
 	chown -R www-data:www-data /var/www/$HOSTNAME/*

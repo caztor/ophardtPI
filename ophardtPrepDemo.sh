@@ -41,7 +41,7 @@ rm -f /etc/ssl/private/$HOSTNAME*
 
 echo - Removing Databases
 DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
-echo $DBDROP | mysql -uroot -p$DBPASS
+if [ ! -z "$DBDROP" ] ; then echo $DBDROP | mysql -uroot -p$DBPASS; fi
 
 printf "\n\nBeginning installation\n\n"
 
@@ -54,7 +54,7 @@ do
 
 	echo - Copying files
 	cp -R /var/www/fencing /var/www/$HOSTNAME
-	wget -O /var/www/$HOSTNAME/web/img/logo.png https://raw.githubusercontent.com/caztor/ophardtPI/master/logo/logo$i.png 
+	wget -q -O /var/www/$HOSTNAME/web/img/logo.png https://raw.githubusercontent.com/caztor/ophardtPI/master/logo/logo$i.png 
 
 	echo - Setting permissions
 	chown -R www-data:www-data /var/www/$HOSTNAME/*

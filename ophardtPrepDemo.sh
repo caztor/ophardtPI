@@ -9,10 +9,19 @@ fi
 HOSTSUFFIX="student"
 
 #How many environments should we build
+while true
+do
 echo How many demo environments should we build?
-read -p 'Input number (between 1-19): ' democount
+read -p 'Input number (between 1-19): ' ENVCOUNT
+    if [ $ENVCOUNT ] && [ $ENVCOUNT -gt 0 ] && [ $ENVCOUNT -lt 20 ] ;
+    then
+	 break
+     else
+         echo "You need to enter a valid value!"
+     fi
+done
 
-#How many environments should we build
+#Get the domain suffix
 read -p 'Input domain suffix (i.e. example.com): ' DOMAIN
 
 #Input root password for the mySQL database
@@ -34,7 +43,7 @@ echo $DBDROP | mysql -uroot -p$DBPASS
 
 printf "\n\nBeginning installation\n\n"
 
-for (( i=1; i<=$democount; i++ ))
+for (( i=1; i<=$ENVCOUNT; i++ ))
 do
 	HOSTNAME=$HOSTSUFFIX$i
 	echo Deploying environment $HOSTNAME.$DOMAIN

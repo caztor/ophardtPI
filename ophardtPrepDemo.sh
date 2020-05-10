@@ -14,6 +14,10 @@ read -p 'Input number (between 1-19): ' democount
 echo Where should the domain name be?
 read -p 'Input domain suffix (i.e. example.com): ' demodomain
 
+#Input root password for the mySQL database
+echo Input root password for the mySQL database
+read -ps 'mySQL root password: ' dbpass
+
 #Remove existing installation
 #rm -f /var/www/student*
 
@@ -44,7 +48,11 @@ server {
 }
 EOF
 
-	sudo ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
+	ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
+	echo - Creating DB
+	echo "drop database student$demo;" | mysql -u root --password=$dbpass
+	echo "create database student$demo;" | mysql -u root --password=$dbpass
+	mysqldump -R -u root --password=$dbpass score_fencing | sudo myslq -u root --password=$dbpass student$demo
 
 done
 

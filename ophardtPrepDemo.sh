@@ -40,7 +40,7 @@ rm -f /etc/ssl/certs/$HOSTNAME*
 rm -f /etc/ssl/private/$HOSTNAME*
 
 echo - Removing Databases
-DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
+DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',IFNULL(SCHEMA_NAME, 'NODBFOUND_rand342315'),';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE '$HOSTSUFFIX%';")
 if [ ! -z "$DBDROP" ] ; then echo $DBDROP | mysql -uroot -p$DBPASS; fi
 
 printf "\n\nBeginning installation\n\n"

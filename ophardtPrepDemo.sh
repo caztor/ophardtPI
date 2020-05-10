@@ -19,7 +19,7 @@ echo Input root password for the mySQL database
 read -sp 'mySQL root password: ' dbpass
 
 #Remove existing installation
-#rm -f /var/www/student*
+rm -f /var/www/student*
 
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*
@@ -55,6 +55,7 @@ EOF
 	ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
 	echo - Creating DB
 	echo "create database student$demo;" | mysql -u root --password=$dbpass
+	echo "GRANT ALL PRIVILEGES ON student$demo.* TO 'scoring'@'localhost';" | mysql -u root --password=$dbpass
 	mysqldump -R -u root --password=$dbpass score_fencing | mysql -u root --password=$dbpass student$demo
 
 done

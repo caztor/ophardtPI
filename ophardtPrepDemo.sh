@@ -1,6 +1,11 @@
 #!/bin/bash
 #Run this script to prepare a new demo environment or when you have updated the core software
 
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root (sudo)"
+  exit
+fi
+
 #How many environments should we build
 echo How many demo environments should we build?
 read -p 'Input number (between 1-19): ' democount
@@ -15,7 +20,7 @@ read -p 'Input domain suffix (i.e. example.com): ' demodomain
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*
 
-for demo in {1..$democount}
+for (( demo=1; demo<=$democount; demo++ ))
 do
 	echo Preparing demo environment student$demo.$demodomain
 	#cp -R /var/www/fencing /var/www/student$demo
@@ -42,3 +47,5 @@ EOF
 	sudo ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
 
 done
+
+nginx -s reload

@@ -43,6 +43,10 @@ echo - Removing Databases
 DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',IFNULL(SCHEMA_NAME, 'NODBFOUND_rand342315'),';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE '$HOSTSUFFIX%';")
 if [ ! -z "$DBDROP" ] ; then echo $DBDROP | mysql -uroot -p$DBPASS; fi
 
+printf "\n\nPreparing base installation for duplication\n\n"
+
+rm -Rf /var/www/fencing/var/cache/prod
+
 printf "\n\nBeginning installation\n\n"
 
 if [ ! -f '/etc/ssl/certs/dhparam.pem' ] ; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; fi

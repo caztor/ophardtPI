@@ -11,12 +11,12 @@ echo How many demo environments should we build?
 read -p 'Input number (between 1-19): ' democount
 
 #How many environments should we build
-echo Where should the domain name be?
 read -p 'Input domain suffix (i.e. example.com): ' demodomain
 
 #Input root password for the mySQL database
-echo Input root password for the mySQL database
-read -sp 'mySQL root password: ' dbpass
+read -sp 'Input root password for the mySQL database: ' dbpass
+
+printf "\n"
 
 #Remove existing installation
 rm -Rf /var/www/student*
@@ -30,9 +30,9 @@ echo $STMT | mysql -uroot -p$dbpass
 for (( demo=1; demo<=$democount; demo++ ))
 do
 	echo Preparing demo environment student$demo.$demodomain
-	#cp -R /var/www/fencing /var/www/student$demo
-	#source ophardtUpdate.sh
-	#sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
+	cp -R /var/www/fencing /var/www/student$demo
+	source ophardtUpdate.sh
+	sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
 
 	cat > /etc/nginx/sites-available/student$demo.$demodomain << EOF
 # Virtual Host configuration for student$demo.$demodomain

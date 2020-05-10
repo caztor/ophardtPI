@@ -42,7 +42,7 @@ for (( demo=1; demo<=$democount; demo++ ))
 do
 	echo Preparing demo environment student$demo.$demodomain
 	#cp -R /var/www/fencing /var/www/student$demo
-	sed -i 's/score_fencing/student$demo/g' /var/www/student$demo/app/config/parameters.yml
+	sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
 
 	cat > /etc/nginx/sites-available/student$demo.$demodomain << EOF
 # Virtual Host configuration for student$demo.$demodomain

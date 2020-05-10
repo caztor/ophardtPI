@@ -52,11 +52,11 @@ server {
 
 	server_name student$demo.$demodomain;
 
-	root /var/www/student$demo;
+	root /var/www/student$demo/web;
 	index app.php;
 
 	location / {
-		try_files $uri $uri/ /app.php?a=$uri;
+		try_files \$uri \$uri/ /app.php?a=\$uri;
 	}
 }
 EOF

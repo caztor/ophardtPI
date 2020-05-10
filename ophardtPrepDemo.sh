@@ -6,68 +6,88 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+HOSTSUFFIX="student"
+
 #How many environments should we build
 echo How many demo environments should we build?
 read -p 'Input number (between 1-19): ' democount
 
 #How many environments should we build
-read -p 'Input domain suffix (i.e. example.com): ' demodomain
+read -p 'Input domain suffix (i.e. example.com): ' DOMAIN
 
 #Input root password for the mySQL database
-read -sp 'Input root password for the mySQL database: ' dbpass
+read -sp 'Input root password for the mySQL database: ' DBPASS
 
 printf "\n\nRemoving old installation\n\n"
 
 #Remove existing installation
 echo - Cleaning up files
-rm -Rf /var/www/student*
+rm -Rf /var/www/$HOSTSUFFIX*
 
 echo - Removing virtual host configurations
-rm -f /etc/nginx/sites-available/student*
-rm -f /etc/nginx/sites-enabled/student*
+rm -f /etc/nginx/sites-available/$HOSTSUFFIX*
+rm -f /etc/nginx/sites-enabled/$HOSTSUFFIX*
 
 echo - Removing Databases
-STMT=$(mysql -uroot -p$dbpass -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
-echo $STMT | mysql -uroot -p$dbpass
+DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
+echo $DBDROP | mysql -uroot -p$DBPASS
 
 printf "\n\nBeginning installation\n\n"
 
-for (( demo=1; demo<=$democount; demo++ ))
+for (( i=1; i<=$democount; i++ ))
 do
-	echo Deploying environment student$demo.$demodomain
+	HOSTNAME=$HOSTSUFFIX$i
+	echo Deploying environment $HOSTNAME.$DOMAIN
+
 	echo - Copying files
-	cp -R /var/www/fencing /var/www/student$demo
+	cp -R /var/www/fencing /var/www/$HOSTNAME
+
 	echo - Setting permissions
-	source ophardtUpdate.sh
+	chown -R www-data:www-data /var/www/$HOSTNAME/*
+	chmod -R 0744 /var/www/$HOSTNAME/*
+	chmod 0755 -R /var/www/$HOSTNAME/OphardtSync/
+	chmod 0440 /var/www/$HOSTNAME/app/config/ophardt_license.yml
+
 	echo - Updating configuration
-	sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
+	sed -i 's/score_fencing/'$HOSTNAME'/g' /var/www/$HOSTNAME/app/config/parameters.yml
 
 	echo - Creating virtual host configuration
-	cat > /etc/nginx/sites-available/student$demo.$demodomain << EOF
-# Virtual Host configuration for student$demo.$demodomain
+	cat > /etc/nginx/sites-available/$HOSTNAME.$DOMAIN << EOF
+# Virtual Host configuration for $HOSTNAME.$DOMAIN
 
 server {
 	listen 80;
 	listen [::]:80;
 
-	server_name student$demo.$demodomain;
+	server_name $HOSTNAME.$DOMAIN;
 
-	root /var/www/student$demo/web;
+	root /var/www/$HOSTNAME/web;
 	index app.php;
 
 	location / {
 		try_files \$uri \$uri/ /app.php?a=\$uri;
 	}
+        # pass PHP scripts to FastCGI server
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+        #       # With php-fpm (or other unix sockets):
+                fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        }
+
+        # deny access to .htaccess files, if Apache's document root concurs with nginx's one
+        location ~ /\.ht {
+                deny all;
+        }
 }
 EOF
 
 	echo - Activating virtual host configuration
-	ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
+	ln -s /etc/nginx/sites-available/$HOSTNAME.$DOMAIN /etc/nginx/sites-enabled/$HOSTNAME.$DOMAIN
 	
 	echo - Creating DB and setting permissions
-	echo "create database student$demo;" | mysql -u root --password=$dbpass
-	echo "GRANT ALL PRIVILEGES ON student$demo.* TO 'scoring'@'localhost';" | mysql -u root --password=$dbpass
-	mysqldump -R -u root --password=$dbpass score_fencing | mysql -u root --password=$dbpass student$demo
+	echo "create database $HOSTNAME;" | mysql -uroot -p$DBPASS
+	echo "GRANT ALL PRIVILEGES ON $HOSTNAME.* TO 'scoring'@'localhost';" | mysql -u root -p$DBPASS
+	mysqldump -R -uroot -p$DBPASS score_fencing | mysql -uroot -p$DBPASS $HOSTNAME
 
 done
 

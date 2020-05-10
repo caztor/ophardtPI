@@ -19,7 +19,7 @@ echo Input root password for the mySQL database
 read -sp 'mySQL root password: ' dbpass
 
 #Remove existing installation
-rm -f /var/www/student*
+rm -Rf /var/www/student*
 
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*

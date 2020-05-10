@@ -74,7 +74,7 @@ do
 
 server {
 	listen 443 http2 ssl;
-	listen [::]:443 http2 sll;
+	listen [::]:443 http2 ssl;
 
 	server_name $HOSTNAME.$DOMAIN;
 

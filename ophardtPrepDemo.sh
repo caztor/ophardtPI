@@ -24,6 +24,20 @@ read -ps 'mySQL root password: ' dbpass
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*
 
+DB_STARTS_WITH="student"
+MUSER="root"
+MYSQL="mysql"
+
+DBS="$($MYSQL -u$MUSER -p$dbpass -Bse 'show databases')"
+for db in $DBS; do
+
+if [[ "$db" =~ "^${DB_STARTS_WITH}" ]]; then
+    echo "Deleting $db"
+    $MYSQL -u$MUSER -p$dbpass -Bse "drop database $db"
+fi
+
+done
+
 for (( demo=1; demo<=$democount; demo++ ))
 do
 	echo Preparing demo environment student$demo.$demodomain
@@ -50,7 +64,6 @@ EOF
 
 	ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
 	echo - Creating DB
-	echo "drop database student$demo;" | mysql -u root --password=$dbpass
 	echo "create database student$demo;" | mysql -u root --password=$dbpass
 	mysqldump -R -u root --password=$dbpass score_fencing | sudo myslq -u root --password=$dbpass student$demo
 

@@ -16,7 +16,7 @@ read -p 'Input domain suffix (i.e. example.com): ' demodomain
 
 #Input root password for the mySQL database
 echo Input root password for the mySQL database
-read -ps 'mySQL root password: ' dbpass
+read -sp 'mySQL root password: ' dbpass
 
 #Remove existing installation
 #rm -f /var/www/student*
@@ -24,25 +24,15 @@ read -ps 'mySQL root password: ' dbpass
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*
 
-DB_STARTS_WITH="student"
-MUSER="root"
-MYSQL="mysql"
-
-DBS="$($MYSQL -u$MUSER -p$dbpass -Bse 'show databases')"
-for db in $DBS; do
-
-if [[ "$db" =~ "^${DB_STARTS_WITH}" ]]; then
-    echo "Deleting $db"
-    $MYSQL -u$MUSER -p$dbpass -Bse "drop database $db"
-fi
-
-done
+STMT=$(mysql -uroot -p$dbpass -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
+echo $STMT | mysql -uroot -p$dbpass
 
 for (( demo=1; demo<=$democount; demo++ ))
 do
 	echo Preparing demo environment student$demo.$demodomain
 	#cp -R /var/www/fencing /var/www/student$demo
-	sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
+	#source ophardtUpdate.sh
+	#sed -i 's/score_fencing/student'$demo'/g' /var/www/student$demo/app/config/parameters.yml
 
 	cat > /etc/nginx/sites-available/student$demo.$demodomain << EOF
 # Virtual Host configuration for student$demo.$demodomain

@@ -45,7 +45,7 @@ echo $DBDROP | mysql -uroot -p$DBPASS
 
 printf "\n\nBeginning installation\n\n"
 
-if [ ! -f '/etc/ssl/certs/dhparam.pem' ] ; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 fi
+if [ ! -f '/etc/ssl/certs/dhparam.pem' ] ; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; fi
 
 for (( i=1; i<=$ENVCOUNT; i++ ))
 do

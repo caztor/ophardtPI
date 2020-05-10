@@ -24,7 +24,7 @@ read -sp 'mySQL root password: ' dbpass
 rm -f /etc/nginx/sites-available/student*
 rm -f /etc/nginx/sites-enabled/student*
 
-STMT=$(mysql -uroot -p$dbpass -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
+STMT=$(mysql -uroot -p$dbpass -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
 echo $STMT | mysql -uroot -p$dbpass
 
 for (( demo=1; demo<=$democount; demo++ ))
@@ -55,7 +55,7 @@ EOF
 	ln -s /etc/nginx/sites-available/student$demo.$demodomain /etc/nginx/sites-enabled/student$demo.$demodomain
 	echo - Creating DB
 	echo "create database student$demo;" | mysql -u root --password=$dbpass
-	mysqldump -R -u root --password=$dbpass score_fencing | sudo myslq -u root --password=$dbpass student$demo
+	mysqldump -R -u root --password=$dbpass score_fencing | mysql -u root --password=$dbpass student$demo
 
 done
 

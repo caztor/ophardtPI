@@ -36,12 +36,16 @@ rm -Rf /var/www/$HOSTSUFFIX*
 echo - Removing virtual host configurations
 rm -f /etc/nginx/sites-available/$HOSTSUFFIX*
 rm -f /etc/nginx/sites-enabled/$HOSTSUFFIX*
+rm -f /etc/ssl/certs/$HOSTNAME*
+rm -f /etc/ssl/private/$HOSTNAME*
 
 echo - Removing Databases
 DBDROP=$(mysql -uroot -p$DBPASS -Bse "SET SESSION group_concat_max_len = @@max_allowed_packet; SELECT GROUP_CONCAT(CONCAT('DROP DATABASE IF EXISTS ',SCHEMA_NAME,';') SEPARATOR ' ') FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'student_%';")
 echo $DBDROP | mysql -uroot -p$DBPASS
 
 printf "\n\nBeginning installation\n\n"
+
+if [ ! -f '/etc/ssl/certs/dhparam.pem' ] ; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 fi
 
 for (( i=1; i<=$ENVCOUNT; i++ ))
 do
@@ -61,18 +65,51 @@ do
 	echo - Updating configuration
 	sed -i 's/score_fencing/'$HOSTNAME'/g' /var/www/$HOSTNAME/app/config/parameters.yml
 
+	echo - Generating certificates
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$HOSTNAME.$DOMAIN.key -out /etc/ssl/certs/$HOSTNAME.$DOMAIN.crt -subj "/C=DK/ST=DK/L=Copenhagen/O=Ophardt Touch Demo/OU=IT/CN=$HOSTNAME.$DOMAIN"
+
 	echo - Creating virtual host configuration
 	cat > /etc/nginx/sites-available/$HOSTNAME.$DOMAIN << EOF
 # Virtual Host configuration for $HOSTNAME.$DOMAIN
 
 server {
-	listen 80;
-	listen [::]:80;
+	listen 443 http2 ssl;
+	listen [::]:443 http2 sll;
 
 	server_name $HOSTNAME.$DOMAIN;
 
 	root /var/www/$HOSTNAME/web;
 	index app.php;
+
+	ssl_certificate /etc/ssl/certs/$HOSTNAME.$DOMAIN.crt;
+        ssl_certificate_key /etc/ssl/private/$HOSTNAME.$DOMAIN.key;
+	ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+	########################################################################
+	# from https://cipherli.st/                                            #
+	# and https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html #
+	########################################################################
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_prefer_server_ciphers on;
+	ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+	ssl_ecdh_curve secp384r1;
+	ssl_session_cache shared:SSL:10m;
+	ssl_session_tickets off;
+	ssl_stapling on;
+	ssl_stapling_verify on;
+	resolver 8.8.8.8 8.8.4.4 valid=300s;
+	resolver_timeout 5s;
+	# Disable preloading HSTS for now.  You can use the commented out header line that includes
+	# the "preload" directive if you understand the implications.
+	#add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+	add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";
+	add_header X-Frame-Options DENY;
+	add_header X-Content-Type-Options nosniff;
+
+	##################################
+	# END https://cipherli.st/ BLOCK #
+	##################################
 
 	location / {
 		try_files \$uri \$uri/ /app.php?a=\$uri;

@@ -15,7 +15,7 @@ do
             break
             ;;
         "Quit")
-            break
+            exit 0
             ;;
         *) echo "invalid option $REPLY";;
     esac
@@ -26,7 +26,7 @@ apt update
 apt upgrade -y
 
 #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-apt install mariadb-server python-mysql.connector openjdk-8-jre ufw certbot -y
+apt install mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot -y
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'

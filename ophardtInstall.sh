@@ -32,10 +32,8 @@ apt install -y python2 unzip mariadb-server python3-mysql.connector openjdk-8-jr
 update-alternatives --install /usr/bin/python python /usr/bin/python2 2
 update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
-#Configure and Enable firewall
+#Configure firewall for SSH
 ufw allow 'OpenSSH'
-ufw allow 'Apache Secure'
-ufw --force enable
 
 #Change MySQL configuration
 echo '[mysqld]
@@ -74,6 +72,9 @@ EOF
 
   echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/apache2/conf.d/00-ioncube.ini
 
+  #Configure firewall for Webserver
+  ufw allow 'Apache Secure'
+
 elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
@@ -81,7 +82,12 @@ elif [ $SERVER == "Nginx" ]; then
 
   echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/fpm/conf.d/00-ioncube.ini
 
+  #Configure firewall for Webserver
+  ufw allow 'Nginx HTTPS'
 fi
+
+#Enable firewall
+ufw --force enable
 
 #Secure MySQL installation
 mysql_secure_installation

@@ -7,10 +7,10 @@ sudo cp ophardt_license.yml /var/www/linux-utils/updater/
 sudo /var/www/linux-utils/bin/softwareupdate -d
 
 #Fix file permissions
-chown -R www-data:www-data /var/www/fencing/*
-chmod -R 0744 /var/www/fencing/*
-chmod 0755 -R /var/www/fencing/OphardtSync/
-chmod 0440 /var/www/fencing/app/config/ophardt_license.yml
+chown -R www-data:www-data /var/www/ophardttouch/*
+chmod -R 0744 /var/www/ophardttouch/*
+chmod 0755 -R /var/www/ophardttouch/OphardtSync/
+chmod 0440 /var/www/ophardttouch/app/config/ophardt_license.yml
 
 #Restart Apache
 service apache2 restart

@@ -29,6 +29,9 @@ apt upgrade -y
 #Install python2 Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
 apt install -y python2 unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot
 
+update-alternatives --install /usr/bin/python python /usr/bin/python2 2
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
 ufw allow 'Apache Secure'

@@ -26,6 +26,14 @@ apt add-apt-repository ppa:ondrej/php -y
 apt update
 apt upgrade -y
 
+sudo apt install -y build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev
+wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+tar -xvf Python-2.7.18.tgz
+cd Python-2.7.18
+./configure --enable-optimizations
+make
+sudo make install
+
 #Install Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
 apt install unzip mariadb-server python-mysql.connector openjdk-8-jre ufw certbot -y
 

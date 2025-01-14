@@ -30,7 +30,7 @@ apt install unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certb
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
-ufw allow 'WWW Full'
+ufw allow 'Apache Secure'
 ufw --force enable
 
 #Change MySQL configuration

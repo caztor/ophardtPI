@@ -25,8 +25,8 @@ done
 apt update
 apt upgrade -y
 
-#Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-apt install mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot -y
+#Install Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
+apt install unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot -y
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
@@ -41,7 +41,7 @@ service mysqld restart
 if [ $SERVER == "Apache2" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-apache -y
+  apt install apache2 php php-mysql php-xml php-curl php-intl php-zip php-mbstring python3-certbot-apache -y
 
   #Create secure SSL config for Apache
   cat > /etc/apache2/conf-available/ssl-params.conf << EOF
@@ -68,14 +68,14 @@ EOF
   sudo a2ensite default-ssl
   sudo a2enconf ssl-params
 
-  echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/apache2/conf.d/00-ioncube.ini
+  echo 'zend_extension = "/usr/lib/php/20230831/ioncube_loader_lin_8.3.so"' > /etc/php/8.3/apache2/conf.d/00-ioncube.ini
 
 elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-nginx -y
+  apt install nginx php-fpm php-mysql php-xml php-curl php-intl php-zip php-mbstring python3-certbot-nginx -y
 
-  echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/fpm/conf.d/00-ioncube.ini
+  echo 'zend_extension = "/usr/lib/php/20230831/ioncube_loader_lin_8.3.so"' > /etc/php/8.3/fpm/conf.d/00-ioncube.ini
 
 fi
 
@@ -83,9 +83,10 @@ fi
 mysql_secure_installation
 
 #Download and install IonCube
-wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_armv7l.tar.gz
-tar -zxvf ioncube_loaders_lin_armv7l.tar.gz
-cp ioncube/ioncube_loader_lin_7.2.so /usr/lib/php/20170718/
+#wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_armv7l.tar.gz #RaspberryPi
+wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_aarch64.tar.gz
+tar -zxvf ioncube_loaders_lin_aarch64.tar.gz
+cp ioncube/ioncube_loader_lin_8.3.so /usr/lib/php/20230831/
 rm -r ioncube*
 
 #Download and install Ophardt Linux Utilities
@@ -98,4 +99,4 @@ rm linux-utils.zip
 touch /root/bin
 
 #Run Ophardt Update script to get the latest linux utils
-python /var/www/linux-utils/updater/ophardt-update.py -s
+python3 /var/www/linux-utils/updater/ophardt-update.py -s

@@ -89,7 +89,7 @@ cp ioncube/ioncube_loader_lin_7.2.so /usr/lib/php/20170718/
 rm -r ioncube*
 
 #Download and install Ophardt Linux Utilities
-wget https://fencing.ophardt.online/software/20200211_67t344/linux-utils.zip
+wget https://fencing.ophardt.online/software/2024-8_7b86t34x76/linux-utils.zip
 unzip linux-utils.zip
 mv linux-utils /var/www/
 rm linux-utils.zip

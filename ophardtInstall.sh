@@ -80,7 +80,9 @@ elif [ $SERVER == "Nginx" ]; then
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
   apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python3-certbot-nginx -y
 
-  echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/fpm/conf.d/00-ioncube.ini
+  sudo touch /etc/php/7.2/mods-available/ioncube.ini
+  sudo bash -c 'echo "zend_extension = /usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/mods-available/ioncube.ini
+  sudo ln -s /etc/php/7.2/mods-available/ioncube.ini /etc/php/7.2/fpm/conf.d/01-ioncube.ini
 
   #Configure firewall for Webserver
   ufw allow 'Nginx HTTPS'

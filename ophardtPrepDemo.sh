@@ -45,7 +45,7 @@ if [ ! -z "$DBDROP" ] ; then echo $DBDROP | mysql -uroot -p$DBPASS; fi
 
 printf "\n\nPreparing base installation for duplication\n\n"
 
-rm -Rf /var/www/fencing/var/cache/prod
+rm -Rf /var/www/ophardttouch/var/cache/prod
 
 printf "\n\nBeginning installation\n\n"
 
@@ -57,7 +57,7 @@ do
 	echo Deploying environment $HOSTNAME.$DOMAIN
 
 	echo - Copying files
-	cp -R /var/www/fencing /var/www/$HOSTNAME
+	cp -R /var/www/ophardttouch /var/www/$HOSTNAME
 	wget -q -O /var/www/$HOSTNAME/web/img/logo.png https://raw.githubusercontent.com/caztor/ophardtPI/master/logo/logo$i.png 
 
 	echo - Setting permissions

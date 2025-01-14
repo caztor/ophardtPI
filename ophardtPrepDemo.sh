@@ -143,4 +143,5 @@ EOF
 done
 
 printf "\n\nReloading web server\n\n"
+systemctl restart php-fpm
 nginx -s reload

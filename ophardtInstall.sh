@@ -26,8 +26,8 @@ add-apt-repository ppa:ondrej/php -y
 apt update
 apt upgrade -y
 
-#Install 2to3 Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-apt install -y 2to3 unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot
+#Install python2 Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
+apt install -y python2 unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
@@ -100,5 +100,4 @@ rm linux-utils.zip
 touch /root/bin
 
 #Run Ophardt Update script to get the latest linux utils
-2to3 -w /var/www/linux-utils/updater/ophardt-update.py
-python3 /var/www/linux-utils/updater/ophardt-update.py -s
+python /var/www/linux-utils/updater/ophardt-update.py -s

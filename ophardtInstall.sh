@@ -1,5 +1,5 @@
 #!/bin/bash
-echo 'This will install Ophardt on Ubuntu'
+echo 'This will install Ophardt on Ubuntu 20.04'
 
 PS3='Please choose desired webserver: '
 options=("Apache2" "Nginx" "Quit")
@@ -7,7 +7,7 @@ select SERVER in "${options[@]}"
 do
     case $SERVER in
         "Apache2")
-            echo "Installing Ophardt on $SERVER"
+            echo "Installing Ophardt on $SERVER (beta)"
             break
             ;;
         "Nginx")

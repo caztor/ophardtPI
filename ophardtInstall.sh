@@ -26,16 +26,8 @@ apt add-apt-repository ppa:ondrej/php -y
 apt update
 apt upgrade -y
 
-sudo apt install -y build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev
-wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-tar -xvf Python-2.7.18.tgz
-cd Python-2.7.18
-./configure --enable-optimizations
-make
-sudo make install
-
-#Install Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-apt install unzip mariadb-server python-mysql.connector openjdk-8-jre ufw certbot -y
+#Install 2to3 Unzip Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
+apt install -y 2to3 unzip mariadb-server python3-mysql.connector openjdk-8-jre ufw certbot
 
 #Configure and Enable firewall
 ufw allow 'OpenSSH'
@@ -50,7 +42,7 @@ service mysqld restart
 if [ $SERVER == "Apache2" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-apache -y
+  apt install apache2 php7.2 php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python3-certbot-apache -y
 
   #Create secure SSL config for Apache
   cat > /etc/apache2/conf-available/ssl-params.conf << EOF
@@ -82,7 +74,7 @@ EOF
 elif [ $SERVER == "Nginx" ]; then
 
   #Install Apache, PHP, PHP Extensions, MariaDB, MySQL Python Connector, Java
-  apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python-certbot-nginx -y
+  apt install nginx php7.2-fpm php7.2-mysql php7.2-xml php7.2-curl php7.2-intl php7.2-zip php7.2-mbstring python3-certbot-nginx -y
 
   echo 'zend_extension = "/usr/lib/php/20170718/ioncube_loader_lin_7.2.so"' > /etc/php/7.2/fpm/conf.d/00-ioncube.ini
 
@@ -108,4 +100,5 @@ rm linux-utils.zip
 touch /root/bin
 
 #Run Ophardt Update script to get the latest linux utils
-python /var/www/linux-utils/updater/ophardt-update.py -s
+2to3 -w /var/www/linux-utils/updater/ophardt-update.py
+python3 /var/www/linux-utils/updater/ophardt-update.py -s

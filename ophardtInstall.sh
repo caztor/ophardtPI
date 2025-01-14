@@ -22,7 +22,7 @@ do
 done
 
 #Make sure that Raspbian and packages are up to date
-apt add-apt-repository ppa:ondrej/php
+apt add-apt-repository ppa:ondrej/php -y
 apt update
 apt upgrade -y
 
